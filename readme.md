@@ -62,3 +62,22 @@ For example:
     ]
 }
 ```
+
+### Installation
+
+Place the `/WorkspaceManager/` folder into your Powershell modules directory. This is usually found in `~/Documents/WindowsPowershell/Modules/`.
+
+### Usage
+
+Run the command Open-Workspace and a list of your workspaces will show.
+
+To open a workspace, you can either type the quick-code letter to the left of an option (e.g 'X' would open the workspace 'Uni Work') or you can type the start of the name of the workspace and the first match will be opened.
+
+```
+    > Open-WorkSpace
+     Loaded config from  E:\ja1ke\Documents\WindowsPowerShell\Modules\WorkspaceManager\\config. user.json
+     Select a workspace:
+     Z -- Relaxation
+     X -- Uni Work
+    > Relaxa|
+```
