@@ -1,0 +1,18 @@
+{
+    "workspaces": [
+        {
+            "name": "Template Workspace",
+            "websites": ["http://www.google.com"],
+            "code": ["~\\Documents"],
+            "visual_studio": [],
+            "open_files": []
+        },
+        {
+            "name": "Template Workspace 2",
+            "websites": ["http://www.youtube.com"],
+            "code": [],
+            "visual_studio": [],
+            "open_files": []
+        }
+    ]
+}
