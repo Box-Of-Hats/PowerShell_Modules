@@ -95,8 +95,8 @@ function OpenWorkspace {
 
 function Get-ConfigFile {
     $configPaths = (
-        "~\\Documents\\WindowsPowerShell\\Modules\\WorkspaceManager\\config.user.json",
-        "~\\Documents\\WindowsPowerShell\\Modules\\WorkspaceManager\\config.json"
+        "$PSScriptRoot\\config.user.json",
+        "$PSScriptRoot\\config.json"
     )
     if ([string]::IsNullOrEmpty($ConfigFile)) {
         foreach ($path in $configPaths) {
