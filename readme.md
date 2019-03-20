@@ -75,7 +75,7 @@ To open a workspace, you can either type the quick-code letter to the left of an
 
 ```
     > Open-WorkSpace
-     Loaded config from  E:\ja1ke\Documents\WindowsPowerShell\Modules\WorkspaceManager\\config. user.json
+     Loaded config from  E:\ja1ke\Documents\WindowsPowerShell\Modules\WorkspaceManager\\config.user.json
      Select a workspace:
      Z -- Relaxation
      X -- Uni Work
