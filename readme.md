@@ -1,25 +1,12 @@
 # Powershell Snippets
 
-## Process clipboard selection
+## Module installer
 
-Need to copy lots of items from one place to another but the format isn't quite right? You can modify the clipboard selection on-the-fly!
+To install any modules from this repo, you can dump the associated directory into your Powershell modules folder. 
 
-```Powershell
-function Process-Clipboard {
-    $prev = $null;
-    while ($true) {
-        $cb = Get-Clipboard
-        if ($prev -ne $cb) {
-            #Do processing here
+Otherwise, you can run ModuleInstaller.ps1 from this repo with the name of the module that you want to install.
 
-            $prev = $cb
-            Write-Host "Clipboard: '$cb'"
-        }
-        sleep 1
-        Write-Host "." -NoNewLine
-    }
-}
-```
+`~\PowerShell_Snippets\ModuleInstaller> .\ModuleInstaller.ps1 ..\WorkspaceManager`
 
 ## WorkspaceManager
 
@@ -80,4 +67,29 @@ To open a workspace, you can either type the quick-code letter to the left of an
      Z -- Relaxation
      X -- Uni Work
     > Relaxa|
+```
+
+## Process clipboard selection
+
+Need to copy lots of items from one place to another but the format isn't quite right? You can modify the clipboard selection on-the-fly!
+
+```Powershell
+function Process-Clipboard {
+    $prev = $null;
+    while ($true) {
+        $clipBoard = Get-Clipboard
+        if ($prev -ne $clipBoard) {
+            ## Do processing here ##
+
+            # e.g
+            # $clipBoard = "My name is $clipBoard"
+
+            ########################
+            Set-Clipboard $clipBoard
+            $prev = $clipBoard
+        }
+        sleep 1
+        Write-Host "$clipBoard"
+    }
+}
 ```
