@@ -1,18 +1,23 @@
 {
+    "programs": {
+        "vscode": "C:\\Users\\username\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+        "vstudio": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\IDE\\devenv.exe"
+    },
     "workspaces": [
         {
             "name": "Template Workspace",
             "websites": ["http://www.google.com"],
-            "code": ["~\\Documents"],
-            "visual_studio": [],
+            "launch": {},
             "open_files": []
         },
         {
             "name": "Template Workspace 2",
             "websites": ["http://www.youtube.com"],
-            "code": [],
-            "visual_studio": [],
-            "open_files": []
+            "open_files": [],
+            "launch": {
+                "vstudio": "C:\\Users\\username\\source\\repos\\project1\\projnumber1.sln",
+                "code": ["~\\Documents"]
+            }
         }
     ]
 }

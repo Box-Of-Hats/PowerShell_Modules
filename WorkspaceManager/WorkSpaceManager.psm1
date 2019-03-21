@@ -62,16 +62,6 @@ function OpenWorkspace {
             Start-Process chrome $url
         }
     }
-
-    # Open Code
-    foreach ($directory in $WorkSpace.code) {
-        Start-Process "~\AppData\Local\Programs\Microsoft VS Code\Code.exe" -ArgumentList ($directory ) -WindowStyle Maximized
-    }
-
-    # Open Visual Studio 
-    foreach ($directory in $WorkSpace.visual_studio) {
-        Start-Process "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\devenv.exe" -ArgumentList ($directory ) -WindowStyle Maximized
-    }
     
     # Misc Files
     foreach ($file in $WorkSpace.open_files) {
@@ -84,11 +74,19 @@ function OpenWorkspace {
     }
 
     # Launch
-    foreach ($program in $WorkSpace.launch) {
-        # TODO: Get program location dymanically from "programs" at top of config.json
-        $programLocation = $config.programs
-        write-host "Prog: " $program
-        write-host "Prog loc:" $programLocation
+    foreach ($programName in $WorkSpace.launch) {
+        $launchablePrograms = @{}
+
+        foreach ($item in $config.programs.PSObject.Properties) {
+            $launchablePrograms[$item.Name] = $item.Value.ToString().Trim()
+        }
+
+        foreach ($item in $programName.PSObject.Properties) {
+            $exe = $launchablePrograms.($item.Name)
+            $arg = $item.Value
+            Write-Host  "Start-Process '$exe' $arg"
+            Start-Process $exe $arg
+        }
     }
 
 }
@@ -112,7 +110,7 @@ function Get-ConfigFile {
     }
 }
 
-function Edit-WorkSpace {
+function Edit-WorkSpaces {
     $configFile = Get-ConfigFile
     if ([string]::IsNullOrEmpty($configFile)) {
         return
@@ -124,6 +122,7 @@ function Open-WorkSpace {
     Param(
         [string]$ConfigFile
     )
+    Write-Host "TEST"
     if ([string]::IsNullOrEmpty($ConfigFile)) {
         $ConfigFile = Get-ConfigFile
     }
@@ -149,5 +148,5 @@ function Open-WorkSpace {
     }
 }
 
-Export-ModuleMember Edit-WorkSpace
+Export-ModuleMember Edit-WorkSpaces
 Export-ModuleMember Open-WorkSpace
