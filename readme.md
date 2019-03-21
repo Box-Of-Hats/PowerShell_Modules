@@ -6,7 +6,7 @@ To install any modules from this repo, you can dump the associated directory int
 
 Otherwise, you can run ModuleInstaller.ps1 from this repo with the name of the module that you want to install.
 
-`~\PowerShell_Snippets\ModuleInstaller> .\ModuleInstaller.ps1 ..\WorkspaceManager`
+`~\PowerShell_Snippets\modules> .\ModuleInstaller.ps1 .\WorkspaceManager`
 
 ## WorkspaceManager
 
@@ -19,40 +19,29 @@ For example:
 
 ```json
 {
+    "programs": {
+        "vscode": "C:\\Users\\username\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+        "vstudio": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\IDE\\devenv.exe"
+    },
     "workspaces": [
         {
-            "name": "Relax",
-            "websites": [
-                "http://www.youtube.com",
-                "http://www.facebook.com"
-            ],
-            "code": [],
-            "visual_studio": [],
-            "open_files": [
-                "~/Games/StormTheHouse/storm.exe"
-            ]
+            "name": "Template Workspace",
+            "websites": ["http://www.google.com"],
+            "launch": {},
+            "open_files": []
         },
         {
-            "name": "Uni Work",
-            "websites": [
-                "http://www.wikipedia.org"
-            ],
-            "code": [],
-            "visual_studio": [
-                "~/source/repos/My_Project/"
-            ],
-            "open_files": [
-                "~/Documents/Work/Uni/ProjectReport.docx",
-                "~/Documents/Work/spending.xlsx
-            ]
+            "name": "Template Workspace 2",
+            "websites": ["http://www.youtube.com"],
+            "open_files": [],
+            "launch": {
+                "vstudio": "C:\\Users\\username\\source\\repos\\project1\\projnumber1.sln",
+                "code": ["~\\Documents"]
+            }
         }
     ]
 }
 ```
-
-### Installation
-
-Place the `/WorkspaceManager/` folder into your Powershell modules directory. This is usually found in `~/Documents/WindowsPowershell/Modules/`.
 
 ### Usage
 
