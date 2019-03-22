@@ -22,8 +22,8 @@ function CloseVirtualDeskTop {
     $KeyShortcut = Add-Type -MemberDefinition @" 
     [DllImport("user32.dll")] 
     static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo); 
-    //WIN + CTRL + D: Create a new desktop 
-    public static void CreateVirtualDesktopInWin10() 
+    //WIN + CTRL + W: Close a desktop 
+    public static void CloseVirtualDesktopInWin10() 
     { 
         //Key down 
         keybd_event((byte)0x5B, 0, 0, UIntPtr.Zero); //Left Windows key  
@@ -34,8 +34,8 @@ function CloseVirtualDeskTop {
         keybd_event((byte)0x11, 0, (uint)0x2, UIntPtr.Zero); 
         keybd_event((byte)0x44, 0, (uint)0x2, UIntPtr.Zero); 
     } 
-"@ -Name CreateVirtualDesktop -UsingNamespace System.Threading -PassThru 
-    $KeyShortcut::CreateVirtualDesktopInWin10()
+"@ -Name CloseVirtualDesktop -UsingNamespace System.Threading -PassThru 
+    $KeyShortcut::CloseVirtualDesktopInWin10()
 }
 
 function ShowMenu {
@@ -149,7 +149,8 @@ function Open-WorkSpace {
     if (Test-Path -Path $ConfigFile -PathType Leaf) {
         Write-Host "Loaded config from $ConfigFile" -ForegroundColor Green
         $config = Get-Content $ConfigFile | ConvertFrom-Json
-    } else {
+    }
+    else {
         Write-Host "Could not find config: $ConfigFile"
         return
     }
@@ -169,7 +170,10 @@ function Open-WorkSpace {
 }
 
 function Close-Workspaces {
-    for ($i = 0; $i -lt 10; $i++) {
+    param(
+        [int]$Count = 10
+    )
+    for ($i = 0; $i -lt $Count; $i++) {
         CloseVirtualDeskTop
         Start-Sleep -Milliseconds 100
     }
