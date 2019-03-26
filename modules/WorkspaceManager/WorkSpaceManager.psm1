@@ -156,7 +156,7 @@ function Open-WorkSpace {
     }
 
     Write-Host "Select a workspace:"
-    $chosenWorkspaceIndex = ShowMenu($config.workspaces.name)
+    $chosenWorkspaceIndex = ShowMenu $config.workspaces.name -KeyList $config.keylist
     
     if (-1 -eq $chosenWorkspaceIndex) {
         Write-Host "Could not find workspace."
