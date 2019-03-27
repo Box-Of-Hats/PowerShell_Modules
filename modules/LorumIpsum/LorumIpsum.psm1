@@ -1,6 +1,6 @@
 function New-LorumIpsum {
     Param(
-        [int] $CharLength = -1,
+        [int] $CharLength = 150,
         [int] $SentenceLengthWords = 10,
         [switch] $ExactLength
     )
