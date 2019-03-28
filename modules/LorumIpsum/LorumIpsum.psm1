@@ -20,16 +20,17 @@ function New-LorumIpsum {
     while ($output.Length -le $CharLength) {
         $randomWord = Get-Random -InputObject $words
 
+        # Capitalise first word of each sentence
         if ($currentSentenceLength -eq 0) {
-            $firstLetter = $randomWord.Substring(0, 1).ToUpper()
-            $remainder = $randomWord.Substring(1)
-            $randomWord = "$firstLetter$remainder"
+            $randomWord = (Get-Culture).TextInfo.ToTitleCase($randomWord)
         }
         else {
             $randomWord = $randomWord.ToLower()
         }
 
         $output = "$output $randomWord"
+
+        # End each setence with a period
         if ($currentSentenceLength -ge $SentenceLengthWords-1) {
             $output = "$output."
             $currentSentenceLength = 0
@@ -40,16 +41,17 @@ function New-LorumIpsum {
         }
     }
 
+    # Truncate string if required
     if ($ExactLength) {
         if ($output.Length -ge $CharLength) {
-            $output = $output.Substring(0, $CharLength)
+            $output = $output.Substring(0, $CharLength-1)
         }
     }
 
+    # End the output with a period if it's not already
     if ($output.Substring($output.Length - 1) -ne ".") {
         $output = "$output."
     }
-    
 
     $output | clip
     return $output
