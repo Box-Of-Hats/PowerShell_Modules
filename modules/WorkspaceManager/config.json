@@ -2,7 +2,8 @@
     "keylist": "ZXCVBNMASDFGHJKLQWERTYUIOP1234567890",
     "programs": {
         "vscode": "C:\\Users\\username\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
-        "vstudio": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\IDE\\devenv.exe"
+        "vstudio": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\IDE\\devenv.exe",
+        "notepad": "%windir%\\system32\\notepad.exe"
     },
     "workspaces": [
         {
@@ -19,6 +20,13 @@
                 "vstudio": "C:\\Users\\username\\source\\repos\\project1\\projnumber1.sln",
                 "code": ["~\\Documents"]
             }
+        },
+        {
+            "name": "Template",
+            "websites": [],
+            "launch": {},
+            "open_files": [],
+            "programs": []
         }
     ]
 }
