@@ -139,7 +139,7 @@ function Edit-WorkSpaces {
     if ([string]::IsNullOrEmpty($configFile)) {
         return
     }
-    Start-Process Code $configFile
+    Start-Process Code $configFile -WindowStyle Maximized -UseNewEnvironment
 }
 
 function Open-WorkSpace {
@@ -147,7 +147,6 @@ function Open-WorkSpace {
         [string]$ConfigFile,
         [switch]$SameDesktop
     )
-    Write-Host "TEST"
     if ([string]::IsNullOrEmpty($ConfigFile)) {
         $ConfigFile = Get-ConfigFile
     }
