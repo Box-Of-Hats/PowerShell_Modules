@@ -68,9 +68,13 @@ function ShowMenu {
 function OpenWorkspace {
     Param(
         $WorkSpace,
-        $Applications
+        $Applications,
+        [switch]$SameDesktop
     )
-    CreateNewVirtualDeskTop
+    if (-not $SameDesktop){
+        CreateNewVirtualDeskTop
+    }
+
     Start-Sleep -Milliseconds 600
     # Open websites
     if ($workSpace.websites.Count -gt 0) {
@@ -90,7 +94,7 @@ function OpenWorkspace {
 
     # Programs
     foreach ($programs in $WorkSpace.programs) {
-        Start-Process $programs -WindowStyle Maximized
+        Start-Process $programs -WindowStyle Maximized -UseNewEnvironment
     }
 
     # Launch
@@ -140,7 +144,8 @@ function Edit-WorkSpaces {
 
 function Open-WorkSpace {
     Param(
-        [string]$ConfigFile
+        [string]$ConfigFile,
+        [switch]$SameDesktop
     )
     Write-Host "TEST"
     if ([string]::IsNullOrEmpty($ConfigFile)) {
@@ -165,7 +170,7 @@ function Open-WorkSpace {
     else {
         $chosenWorkspace = $config.workspaces[$chosenWorkspaceIndex]
         Write-Host "Opening workspace:" $chosenWorkspace.Name
-        OpenWorkspace $chosenWorkspace
+        OpenWorkspace $chosenWorkspace -SameDesktop:$SameDesktop
     }
 }
 
