@@ -71,7 +71,7 @@ function OpenWorkspace {
         $Applications,
         [switch]$SameDesktop
     )
-    if (-not $SameDesktop){
+    if (-not $SameDesktop) {
         CreateNewVirtualDeskTop
     }
 
@@ -99,7 +99,7 @@ function OpenWorkspace {
 
     # Launch
     foreach ($programName in $WorkSpace.launch) {
-        $launchablePrograms = @{}
+        $launchablePrograms = @{ }
 
         foreach ($item in $config.programs.PSObject.Properties) {
             $launchablePrograms[$item.Name] = $item.Value.ToString().Trim()
@@ -115,6 +115,12 @@ function OpenWorkspace {
 
 }
 
+<#
+.DESCRIPTION
+    Retrieve the json configuration file, in order of preference.
+.OUTPUTS
+    Path of the config file to use
+#>
 function Get-ConfigFile {
     $configPaths = (
         "$PSScriptRoot\\config.user.json",
@@ -134,6 +140,10 @@ function Get-ConfigFile {
     }
 }
 
+<#
+.DESCRIPTION
+    Open the current json configuration file for editing in VSCode.
+#>
 function Edit-WorkSpaces {
     $configFile = Get-ConfigFile
     if ([string]::IsNullOrEmpty($configFile)) {
@@ -142,6 +152,14 @@ function Edit-WorkSpaces {
     Start-Process Code $configFile -WindowStyle Maximized -UseNewEnvironment
 }
 
+<#
+.DESCRIPTION
+    Prompt the user for a selection and open the respective workspace.
+.PARAMETER ConfigFile
+    The path of the json config file to read from.
+.PARAMETER SameDesktop
+    Switch to allow a workspace to open in the same desktop.
+#>
 function Open-WorkSpace {
     Param(
         [string]$ConfigFile,
@@ -171,8 +189,15 @@ function Open-WorkSpace {
         Write-Host "Opening workspace:" $chosenWorkspace.Name
         OpenWorkspace $chosenWorkspace -SameDesktop:$SameDesktop
     }
+
 }
 
+<#
+.DESCRIPTION
+    Close X number of virtual desktops. The windows will remain open.
+.PARAMETER Count
+    The number of virtual desktops to close.
+#>
 function Close-Workspaces {
     param(
         [int]$Count = 10
