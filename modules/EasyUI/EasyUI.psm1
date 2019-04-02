@@ -13,7 +13,7 @@ function Get-PinConfirmation {
     $pin = ""
 
     for ($i = 0; $i -lt $PinLength; $i++) {
-        $randomNumber = Get-Random -Minimum 0 -Maximum 9
+        $randomNumber = Get-Random -Minimum 0 -Maximum 10
         $pin = "$pin$randomNumber"
     }
 
