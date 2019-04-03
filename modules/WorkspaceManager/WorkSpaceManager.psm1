@@ -208,6 +208,13 @@ function Close-Workspaces {
     }
 }
 
+
+#Alias
+New-Alias -Name opw -Value Open-WorkSpace
+
+#Exports
+Export-ModuleMember -Alias *
+
 Export-ModuleMember Edit-WorkSpaces
 Export-ModuleMember Open-WorkSpace
 Export-ModuleMember Close-Workspaces

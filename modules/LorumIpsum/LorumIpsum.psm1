@@ -61,4 +61,9 @@ function New-LorumIpsum {
     return $output
 }
 
+#Alias
+New-Alias -Name lorum -Value New-LorumIpsum
+
+#Exports
+Export-ModuleMember -Alias *
 Export-ModuleMember New-LorumIpsum

@@ -35,7 +35,7 @@ Copy-Item $ModuleDirectory $modulesDir -Recurse -Force
 Write-Host "Installed module:" ((Get-ChildItem $ModuleDirectory\*.psm1) | Select-Object -ExpandProperty Name | Split-Path -Leaf) -ForegroundColor Green
 
 Write-Host "Added commands:" -ForegroundColor Green
-$exportedCommands = ((Get-Content (Get-ChildItem $ModuleDirectory\*.psm1)) -match "^Export-ModuleMember[\s]+(.*)$")
+$exportedCommands = ((Get-Content (Get-ChildItem $ModuleDirectory\*.psm1)) -match "^Export-ModuleMember[\s]+(.+-.+)$")
 foreach ($command in $exportedCommands) {
     Write-Host " " ($command -replace "Export-ModuleMember", "").TrimStart() -ForegroundColor Cyan
 }
