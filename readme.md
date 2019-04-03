@@ -6,7 +6,12 @@ To install any modules from this repo, you can dump the associated directory int
 
 Otherwise, you can run ModuleInstaller.ps1 from this repo with the name of the module that you want to install.
 
-`~\PowerShell_Snippets\modules> .\ModuleInstaller.ps1 .\WorkspaceManager`
+Once installled, the module and its commands will be available in all of your powershell sessions, without needing to import it every time.
+
+`E:\dev\code\PowerShell_Snippets\modules> .\ModuleInstaller.ps1 .\WorkspaceManager`
+
+
+![Installation Example](images/ps_snips_install_example.gif)
 
 ## WorkspaceManager
 
