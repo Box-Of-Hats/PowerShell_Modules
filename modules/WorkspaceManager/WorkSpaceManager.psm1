@@ -149,7 +149,7 @@ function Edit-WorkSpaces {
     if ([string]::IsNullOrEmpty($configFile)) {
         return
     }
-    Start-Process Code $configFile -WindowStyle Maximized -UseNewEnvironment
+    Invoke-Item $configFile
 }
 
 <#
