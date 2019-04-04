@@ -1,11 +1,42 @@
+
+<#
+.DESCRIPTION
+Expand the contents of a .cab file into a directory;
+
+.PARAMETER CabFile
+The path of the existing .cab file.
+
+.PARAMETER OutDirectory
+The directory to output the files. This will be created if it doesn't exist.
+
+.EXAMPLE
+> Expand-Cab outDirectory.cab .\myDirectory 
+#>
+
 function Expand-Cab {
     Param (
         [Parameter(Mandatory = $true)] [string] $CabFile,
         [Parameter(Mandatory = $true)] [string] $OutDirectory
     )
-    mkdir $OutDirectory
+    if (-not (Test-Path -Path $OutDirectory -PathType Container)){
+        New-Item $OutDirectory -ItemType Directory
+    }
     expand.exe $CabFile $OutDirectory -F:*
 }
+
+<#
+.DESCRIPTION
+Compress a directory into a .cab file.
+
+.PARAMETER DirectoryToCompress
+The directory to compress.
+
+.PARAMETER OutCabFile
+The path of the .cab file to be created.
+
+.EXAMPLE
+> Compress-ToCab .\myDirectory outDirectory.cab
+#>
 
 function Compress-ToCab {
     param(
