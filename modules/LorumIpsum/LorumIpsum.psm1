@@ -1,7 +1,7 @@
 function New-LorumIpsum {
     Param(
         [int] $CharLength = 150,
-        [int] $SentenceLengthWords = 10,
+        [int] $SentenceLengthWords = 20,
         [switch] $ExactLength,
         $WordList
     )
@@ -57,7 +57,7 @@ function New-LorumIpsum {
         $output = "$output."
     }
     Write-Host "Copied to clipboard." -ForegroundColor Green
-    $output | clip
+    $output | clip.exe
     return $output
 }
 
