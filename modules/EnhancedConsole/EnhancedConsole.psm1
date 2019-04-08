@@ -29,23 +29,47 @@ function Set-LocationAndGetChildItem {
     Get-ChildItem
 }
 
+<#
+.DESCRIPTION
+Output files in the current directory, similar to "ls" command on linux.
+#>
 function Get-ChildItemGridView {
-    $children = Get-ChildItem | Select-Object -ExpandProperty Name
+    Param(
+        [Parameter(Mandatory = $false)]$Directory = $false
+    )
+    if (-not $Directory) {
+        $Directory = "."
+    }
+    $children = Get-ChildItem $Directory
 
     $maxColCount = 3
     $colCount = 0
     foreach ($item in $children) {
         $colCount++
 
-        
-        if ($item.Length -ge 36) {
-            $item = $item.SubString(0, 35) + "…"
+        $fileName = $item | Select-Object -ExpandProperty Name
+
+        #Determine what colour to display the name in
+        if ($fileName.EndsWith(".ps1")) {
+            $color = "Blue"
+        } elseif (Test-Path $item -PathType Container){
+            $color = "Gray"
+        } elseif ($item.IsReadOnly){
+            $color = "DarkGray"
+        } else {
+            $color = "White"
         }
 
-        Write-Host $item -NoNewline
+        #Truncate the filename if necessary
+        if ($fileName.Length -ge 36) {
+            $fileName = $fileName.SubString(0, 35) + "…"
+        }
+
+        #Output the name
+        Write-Host $fileName -NoNewline -ForegroundColor $color
         
-        $spacesRequired = 40 - $item.Length
-        
+        #Add whitespace or a newline char
+        $spacesRequired = 40 - $fileName.Length
         if ($colCount -ge $maxColCount) {
             Write-Host ""
             $colCount = 0
