@@ -1,11 +1,11 @@
 {
     "extension_colors": {
         ".ps1": "Blue",
-        ".exe": "Red"
+        ".exe": "Magenta"
     },
     "prop_colors": {
-        "default": "Red",
-        "is_read_only": "Blue",
-        "is_container": "Gray"
+        "default": "White",
+        "is_read_only": "DarkGray",
+        "is_container": "DarkMagenta"
     }
 }
