@@ -1,11 +1,16 @@
 {
     "extension_colors": {
         ".ps1": "Blue",
-        ".exe": "Magenta"
+        ".psm1": "Blue",
+        ".json": "Yellow",
+        ".js": "Yellow",
+        ".jsx": "Yellow",
+        ".ts": "Yellow",
+        ".exe": "Red"
     },
     "prop_colors": {
         "default": "White",
         "is_read_only": "DarkGray",
-        "is_container": "DarkMagenta"
+        "is_container": "Magenta"
     }
 }
