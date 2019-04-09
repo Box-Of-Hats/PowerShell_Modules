@@ -79,6 +79,7 @@ function Get-ChoiceWithArrowMenu {
     while ($true) {
         Clear-Host
         Write-Host $Message
+        Write-Host ("-" * $Message.Length)
         for ($i = 0; $i -lt $OptionsList.Count; $i++) {
             if ($i -eq $cursorLocation) {
                 Write-Host "$($OptionsList[$i]) <" -ForegroundColor Green
