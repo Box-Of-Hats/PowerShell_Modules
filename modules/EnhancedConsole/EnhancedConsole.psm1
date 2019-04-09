@@ -56,6 +56,7 @@ Output files in the current directory, similar to "ls" command on linux.
 function Get-ChildItemGridView {
     Param(
         [Parameter(Mandatory = $false)]$Directory = $false,
+        [Parameter(Mandatory=$false)]$MaxColumnCount = 4,
         [Parameter(Mandatory=$false)]$ConfigFile = $null
     )
     if (-not $Directory) {
@@ -76,9 +77,10 @@ function Get-ChildItemGridView {
     $propColors = $config.prop_colors
     $extensionColors = $config.extension_colors
 
+    $maxColumnWidth = [math]::Min([math]::Floor($Host.UI.RawUI.WindowSize.Width / $MaxColumnCount), 40)
+
     $children = Get-ChildItem $Directory
 
-    $maxColCount = 3
     $colCount = 0
     foreach ($item in $children) {
         $colCount++
@@ -106,16 +108,16 @@ function Get-ChildItemGridView {
         
         
         #Truncate the filename if necessary
-        if ($fileName.Length -ge 36) {
-            $fileName = $fileName.SubString(0, 35) + "…"
+        if ($fileName.Length -ge $maxColumnWidth) {
+            $fileName = $fileName.SubString(0, $maxColumnWidth-1) + "…"
         }
 
         #Output the name
         Write-Host $fileName -NoNewline -ForegroundColor $color
         
         #Add whitespace or a newline char
-        $spacesRequired = 40 - $fileName.Length
-        if ($colCount -ge $maxColCount) {
+        $spacesRequired = $maxColumnWidth - $fileName.Length - 4
+        if ($colCount -ge $MaxColumnCount) {
             Write-Host ""
             $colCount = 0
         }
