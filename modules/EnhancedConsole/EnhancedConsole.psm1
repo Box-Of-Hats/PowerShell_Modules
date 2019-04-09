@@ -1,3 +1,23 @@
+function Get-ConfigFile {
+    $configPaths = (
+        "$PSScriptRoot\\config.user.json",
+        "$PSScriptRoot\\config.json"
+    )
+    if ([string]::IsNullOrEmpty($ConfigFile)) {
+        foreach ($path in $configPaths) {
+            if (Test-Path -Path $path -PathType Leaf) {
+                return $path
+            }   
+        }
+    }
+    
+    Write-Host "Could not find a config file. Checked locations: "
+    foreach ($path in $configPaths) {
+        Write-Host $path
+    }
+    return $false
+}
+
 <#
 .DESCRIPTION
 Copy the current location in the terminal.
@@ -35,11 +55,27 @@ Output files in the current directory, similar to "ls" command on linux.
 #>
 function Get-ChildItemGridView {
     Param(
-        [Parameter(Mandatory = $false)]$Directory = $false
+        [Parameter(Mandatory = $false)]$Directory = $false,
+        [Parameter(Mandatory=$false)]$ConfigFile = $null
     )
     if (-not $Directory) {
         $Directory = "."
     }
+    
+    if ([string]::IsNullOrEmpty($ConfigFile)) {
+        $configFile = Get-ConfigFile
+    }
+    
+    if (-not $configFile) {
+        Write-Host "Could not find config." -ForegroundColor Red
+        return
+    }
+
+
+    $config = (Get-Content $configFile | ConvertFrom-Json)
+    $propColors = $config.prop_colors
+    $extensionColors = $config.extension_colors
+
     $children = Get-ChildItem $Directory
 
     $maxColCount = 3
@@ -50,16 +86,25 @@ function Get-ChildItemGridView {
         $fileName = $item | Select-Object -ExpandProperty Name
 
         #Determine what colour to display the name in
-        if ($fileName.EndsWith(".ps1")) {
-            $color = "Blue"
-        } elseif (Test-Path $item -PathType Container){
-            $color = "Gray"
+        $color = $propColors.default
+        
+        $extension = $item.Extension
+        if ($null -ne $extensionColors.$extension){
+            $color = $extensionColors.$extension
+        }
+        
+        if (Test-Path $item -PathType Container){
+            $color = $propColors.is_container
         } elseif ($item.IsReadOnly){
-            $color = "DarkGray"
-        } else {
+            $color = $propColors.is_read_only
+        }
+        if ($color -notin @("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed",
+                                "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue",
+                                "Green", "Cyan", "Red", "Magenta", "Yellow", "White")){
             $color = "White"
         }
-
+        
+        
         #Truncate the filename if necessary
         if ($fileName.Length -ge 36) {
             $fileName = $fileName.SubString(0, 35) + "…"
