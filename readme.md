@@ -8,7 +8,7 @@
 
 2. Open a powershell window in the modules directory
 
-    `> cd .\modules\`
+    `> cd .\PowerShell_Modules\modules\`
 
 3. Run ModuleInstaller.ps1
 
