@@ -108,7 +108,7 @@ function Process-Clipboard {
             Set-Clipboard $clipBoard
             $prev = $clipBoard
         }
-        sleep 1
+        Start-Sleep 1
         Write-Host "$clipBoard"
     }
 }

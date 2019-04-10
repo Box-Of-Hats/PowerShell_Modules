@@ -6,13 +6,13 @@ function Process-Clipboard {
             ## Do processing here ##
 
             # e.g
-            # $clipBoard = "My name is $clipBoard"
+            # $clipBoard = $clipBoard.Replace(" , ", " ; ")
 
             ########################
             Set-Clipboard $clipBoard
             $prev = $clipBoard
         }
-        sleep 1
+        Start-Sleep 1
         Write-Host "$clipBoard"
     }
 }
