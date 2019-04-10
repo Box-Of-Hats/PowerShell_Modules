@@ -78,12 +78,12 @@ function OpenWorkspace {
     Start-Sleep -Milliseconds 600
     # Open websites
     if ($workSpace.websites.Count -gt 0) {
-        Start-Process $workSpace.websites[0] -ArgumentList  @('/new-window')
+        Start-Process chrome -ArgumentList  @($workSpace.websites[0], '/new-window')
     }
     if ($workSpace.websites.Count -gt 1) {
         Start-Sleep -Milliseconds 600
         foreach ($url in $WorkSpace.websites[1..$workSpace.websites.Count]) {
-            Start-Process $url
+            Start-Process chrome $url
         }
     }
     
@@ -108,8 +108,8 @@ function OpenWorkspace {
         foreach ($item in $programName.PSObject.Properties) {
             $exe = $launchablePrograms.($item.Name)
             $arg = $item.Value
-            Write-Host "Start-Process '$exe' $arg"
-            Start-Process $exe $arg -UseNewEnvironment -WindowStyle Maximized 
+            Write-Host  "Start-Process '$exe' $arg"
+            Start-Process $exe $arg
         }
     }
 
