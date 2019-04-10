@@ -113,6 +113,7 @@ function Get-ChildItemGridView {
         }
 
         #Output the name
+        $fileName = $fileName.PadRight(40, " ")
         Write-Host $fileName -NoNewline -ForegroundColor $color
         
         #Add whitespace or a newline char
@@ -120,11 +121,6 @@ function Get-ChildItemGridView {
         if ($colCount -ge $MaxColumnCount) {
             Write-Host ""
             $colCount = 0
-        }
-        else {
-            for ($i = 0; $i -lt $spacesRequired; $i++) {
-                Write-Host " " -NoNewline
-            }
         }
     }
     Write-Host ""
