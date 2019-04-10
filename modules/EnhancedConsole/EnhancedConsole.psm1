@@ -56,7 +56,7 @@ Output files in the current directory, similar to "ls" command on linux.
 function Get-ChildItemGridView {
     Param(
         [Parameter(Mandatory = $false)]$Directory = $false,
-        [Parameter(Mandatory=$false)]$MaxColumnCount = 4,
+        [Parameter(Mandatory=$false)]$MaxColumnCount = $null,
         [Parameter(Mandatory=$false)]$ConfigFile = $null
     )
     if (-not $Directory) {
@@ -72,10 +72,19 @@ function Get-ChildItemGridView {
         return
     }
 
-
     $config = (Get-Content $configFile | ConvertFrom-Json)
     $propColors = $config.prop_colors
     $extensionColors = $config.extension_colors
+    $configMaxColumnCount = $config.column_count;
+
+    if ($null -ne $configMaxColumnCount){
+        $MaxColumnCount = $configMaxColumnCount
+    }
+
+    if ($null -eq $MaxColumnCount){
+        $MaxColumnCount = 4
+    }
+
 
     $maxColumnWidth = [math]::Min([math]::Floor($Host.UI.RawUI.WindowSize.Width / $MaxColumnCount), 40)
 
