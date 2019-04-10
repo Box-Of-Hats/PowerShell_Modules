@@ -1,4 +1,5 @@
 {
+    "column_count": 3,
     "extension_colors": {
         ".ps1": "Blue",
         ".psm1": "Blue",
