@@ -1,6 +1,30 @@
-# Powershell Snippets
+# Powershell Modules
 
-## Module installer
+## Quick-Start Guide
+
+1. Clone or download this repository
+
+    `> git clone https://github.com/Box-Of-Hats/PowerShell_Modules.git`
+
+2. Open a powershell window in the modules directory
+
+    `> cd .\modules\`
+
+3. Run ModuleInstaller.ps1
+
+    `> .\ModuleInstaller.ps1 -InstallAllModules`
+
+You now have all of the modules installed and the commands will be available in all of your powershell sessions.
+
+You can use the `Edit-Config` command to select any of the config files used by these modules and you can adjust the settings to suit your needs.
+
+Note: If you re-install any modules using ModuleInstaller.ps1, __you will lose any config.json files.__ You can instead create config.user.json files which will not be overwritten. All modules will prioritise config.user.json files when they are found. 
+
+___
+
+## Available modules
+
+### Module installer
 
 To install any modules from this repo, you can dump the associated directory into your Powershell modules folder. 
 
@@ -13,7 +37,7 @@ Once installled, the module and its commands will be available in all of your po
 
 ![Installation Example](images/ps_snips_install_example.gif)
 
-## WorkspaceManager
+### WorkspaceManager
 
 Open a workspace on a new virtual desktop in Windows 10. Workspaces are defined in a config.json file located in the WorkspaceManager directory. If config.user.json is present then it will be used as a higher priority.
 
@@ -48,7 +72,7 @@ For example:
 }
 ```
 
-### Usage
+#### Usage
 
 Run the command Open-Workspace and a list of your workspaces will show.
 
@@ -63,7 +87,9 @@ To open a workspace, you can either type the quick-code letter to the left of an
     > Relaxa|
 ```
 
-## Process clipboard selection
+## Scripts
+
+### Process clipboard selection
 
 Need to copy lots of items from one place to another but the format isn't quite right? You can modify the clipboard selection on-the-fly!
 
@@ -73,10 +99,10 @@ function Process-Clipboard {
     while ($true) {
         $clipBoard = Get-Clipboard
         if ($prev -ne $clipBoard) {
-            ## Do processing here ##
+            ### Do processing here ##
 
             # e.g
-            # $clipBoard = "My name is $clipBoard"
+            # $clipBoard = $clipBoard.Replace(" , ", " ; ")
 
             ########################
             Set-Clipboard $clipBoard
