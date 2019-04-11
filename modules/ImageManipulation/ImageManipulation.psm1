@@ -102,57 +102,86 @@ function Convert-SvgToPng {
 Scale an image.
 
 .DESCRIPTION
-Take an image and scale it up or down by a given multiplier. Then save it to a new file.
-
-.PARAMETER ImagePath
-The image that should be scaled.
-
-.PARAMETER ScaleFactor
-The multiplier to use for the new image size.
-
-.PARAMETER OutImagePath
-The path of the image file to be created.
+Take an image and scale it up or down by a given multiplier OR set the image to be a given dimension.
+Set one dimension to scale the image while maintaining the same aspect ratio.
+Then save it to a new file.
 
 .EXAMPLE
 Scale-Image -ImagePath .\4x4.png -ScaleFactor 2 -OutImagePath .\8x8.png
 #>
 function Resize-Image {
     param (
-        [Parameter(Mandatory=$true)]$ImagePath,
-        [Parameter(Mandatory=$true)]$ScaleFactor,
-        [Parameter(Mandatory=$false)]$OutImagePath = $null
+        [Parameter(Mandatory = $true)][string]$ImagePath,
+        [Parameter(Mandatory = $false)][float]$ScaleFactor = 0,
+        [Parameter(Mandatory = $false)][string]$OutImagePath = $null,
+        [Parameter(Mandatory = $false)][int]$Height = 0,
+        [Parameter(Mandatory = $false)][int]$Width = 0
     )
     
-    if (-not (Test-Path $ImagePath)){
+    if (-not (Test-Path $ImagePath)) {
         Write-Host "Could not find file: $ImagePath" -ForegroundColor Red
         return $null
     }
 
     $ImagePath = Resolve-Path $ImagePath
 
-    if ($null -eq $OutImagePath){
+    if ([string]::IsNullOrWhiteSpace($OutImagePath)) {
         $item = Get-ChildItem $ImagePath
-        $OutImagePath = $item.BaseName + "_scaled$ScaleFactor" + $item.Extension
+        Write-Host "item $item"
+        $currentTime = [datetime]::Now.Ticks
+        $OutImagePath = $item.BaseName + "_scaled_$currentTime" + $item.Extension
+        $OutImagePath = Join-Path (Get-Location) $OutImagePath
     }
 
-    $OutImagePath = Join-Path (Get-Location) $OutImagePath
 
-    if (Test-Path $OutImagePath){
+    if (Test-Path $OutImagePath) {
         Write-Host "File already exists: $OutImagePath" -ForegroundColor Red
         return $null
     }
 
     $image = New-Object -ComObject Wia.ImageFile
     $image.LoadFile($ImagePath)
-
     $imageProcess = New-Object -ComObject Wia.ImageProcess
     $imageProcess.Filters.Add($imageProcess.FilterInfos("Scale").FilterId)
 
-    $imageProcess.Filters[1].Properties("MaximumWidth").Value = "$([int]::parse($image.Width * $ScaleFactor))"
-    $imageProcess.Filters[1].Properties("MaximumHeight").Value = "$([int]::parse($image.Height * $ScaleFactor))"
-    $imageProcess.Filters[1].Properties("PreserveAspectRatio").Value = 1
+
+    if ($ScaleFactor -ne 0) {
+        #Increase size of image by a uniform multiplier
+        Write-Host "Changing scale of image by $($ScaleFactor)x"
+        $imageProcess.Filters[1].Properties("MaximumWidth").Value = "$([math]::Floor($image.Width * $ScaleFactor))"
+        $imageProcess.Filters[1].Properties("MaximumHeight").Value = "$([math]::Floor($image.Height * $ScaleFactor))"
+        $imageProcess.Filters[1].Properties("PreserveAspectRatio").Value = 1
+    }
+    else {
+        #Scale the image to a specific size
+        if ($Height -eq 0 -and $Width -eq 0) {
+            Write-Host "Width and height not set" -ForegroundColor Red
+            return $null
+        }
+
+        if ($Height -ne 0) {
+            Write-Host "Setting Height to: $Height"
+            $imageProcess.Filters[1].Properties("MaximumHeight").Value = "$Height"
+            $imageProcess.Filters[1].Properties("MaximumWidth").Value = "10000"
+        }
+
+        if ($Width -ne 0) {
+            Write-Host "Setting Width to: $Width"
+            $imageProcess.Filters[1].Properties("MaximumWidth").Value = "$Width"
+            $imageProcess.Filters[1].Properties("MaximumHeight").Value = "10000"
+        }
+
+        if ($Width -ne 0 -and $Height -ne 0){
+            Write-Host "Not preserving aspect ratio."
+            $imageProcess.Filters[1].Properties("PreserveAspectRatio").Value = 0
+        }
+    }
 
     $scaledImage = $imageProcess.Apply($image)
+    if ($null -eq $scaledImage) {
+        Write-Host "Error processing image." -ForegroundColor Red
+        return $null
+    }
     $scaledImage.SaveFile($OutImagePath)
 
 }
