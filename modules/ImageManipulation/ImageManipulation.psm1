@@ -107,7 +107,14 @@ Set one dimension to scale the image while maintaining the same aspect ratio.
 Then save it to a new file.
 
 .EXAMPLE
-Scale-Image -ImagePath .\4x4.png -ScaleFactor 2 -OutImagePath .\8x8.png
+Scale-Image -ImagePath .\4x4.png -OutImagePath .\8x8.png -ScaleFactor 2
+
+Scale-Image -ImagePath .\4x4.png -OutImagePath .\1x1.png -ScaleFactor 0.25
+
+Scale-Image -ImagePath .\4x4.png -OutImagePath .\16x16.png -Height 16
+
+Scale-Image -ImagePath .\4x4.png -OutImagePath .\20x30.png -Height 30 -Width 20
+
 #>
 function Resize-Image {
     param (
@@ -130,9 +137,9 @@ function Resize-Image {
         Write-Host "item $item"
         $currentTime = [datetime]::Now.Ticks
         $OutImagePath = $item.BaseName + "_scaled_$currentTime" + $item.Extension
-        $OutImagePath = Join-Path (Get-Location) $OutImagePath
     }
-
+    
+    $OutImagePath = Join-Path (Get-Location) $OutImagePath
 
     if (Test-Path $OutImagePath) {
         Write-Host "File already exists: $OutImagePath" -ForegroundColor Red
@@ -160,19 +167,18 @@ function Resize-Image {
         }
 
         if ($Height -ne 0) {
-            Write-Host "Setting Height to: $Height"
+            Write-Host "Setting Height to: $($Height)px"
             $imageProcess.Filters[1].Properties("MaximumHeight").Value = "$Height"
             $imageProcess.Filters[1].Properties("MaximumWidth").Value = "10000"
         }
 
         if ($Width -ne 0) {
-            Write-Host "Setting Width to: $Width"
+            Write-Host "Setting Width to: $($Width)px"
             $imageProcess.Filters[1].Properties("MaximumWidth").Value = "$Width"
             $imageProcess.Filters[1].Properties("MaximumHeight").Value = "10000"
         }
 
         if ($Width -ne 0 -and $Height -ne 0){
-            Write-Host "Not preserving aspect ratio."
             $imageProcess.Filters[1].Properties("PreserveAspectRatio").Value = 0
         }
     }
@@ -183,6 +189,7 @@ function Resize-Image {
         return $null
     }
     $scaledImage.SaveFile($OutImagePath)
+    Write-Host "Saved to: $OutImagePath"
 
 }
 
