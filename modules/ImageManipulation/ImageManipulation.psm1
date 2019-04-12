@@ -178,7 +178,7 @@ function Resize-Image {
             $imageProcess.Filters[1].Properties("MaximumHeight").Value = "10000"
         }
 
-        if ($Width -ne 0 -and $Height -ne 0){
+        if ($Width -ne 0 -and $Height -ne 0) {
             $imageProcess.Filters[1].Properties("PreserveAspectRatio").Value = 0
         }
     }
@@ -193,5 +193,31 @@ function Resize-Image {
 
 }
 
+
+function Convert-Image {
+    param(
+        [Parameter(Mandatory = $true)] [string] $ImagePath,
+        [Parameter(Mandatory = $true)] [string] $OutputFile
+    )
+
+    if (-not @("jpeg", "jpg", "gif", "png", "tiff") -contains  $OutputFile.Split(".")[$OutputFile.Split(".").Length-1]) {
+        Write-Host "Unable to convert to file type: $($OutputFile.Split(".")[$OutputFile.Split(".").Length-1])" -ForegroundColor Red
+        return $null
+    }
+
+    # $image = New-Object -ComObject Wia.ImageFile
+    # $image.LoadFile($ImagePath)
+
+    # $imageProcess = New-Object -ComObject Wia.ImageProcess
+    # $imageProcess.Filters.Add($imageProcess.FilterInfos("Convert").FilterId)
+
+    # #$imageProcess.Filters[1].Properties("FormatId").Value = # Set image type here
+
+    # $outImage = $imageProcess.Apply($image)
+    # $outImage.SaveFile($OutputFile)
+
+}
+
+Export-ModuleMember Convert-Image
 Export-ModuleMember Resize-Image
 Export-ModuleMember Convert-SvgToPng
