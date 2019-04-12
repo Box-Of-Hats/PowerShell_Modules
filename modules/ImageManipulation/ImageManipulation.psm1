@@ -200,22 +200,22 @@ function Convert-Image {
         [Parameter(Mandatory = $true)] [string] $OutputFile
     )
 
-    if (-not @("jpeg", "jpg", "gif", "png", "tiff") -contains  $OutputFile.Split(".")[$OutputFile.Split(".").Length-1]) {
+    if (@("jpeg", "jpg", "gif", "png", "tiff") -contains $OutputFile.Split(".")[$OutputFile.Split(".").Length - 1]) {
+        # $image = New-Object -ComObject Wia.ImageFile
+        # $image.LoadFile($ImagePath)
+
+        # $imageProcess = New-Object -ComObject Wia.ImageProcess
+        # $imageProcess.Filters.Add($imageProcess.FilterInfos("Convert").FilterId)
+
+        # #$imageProcess.Filters[1].Properties("FormatId").Value = # Set image type here
+
+        # $outImage = $imageProcess.Apply($image)
+        # $outImage.SaveFile($OutputFile)
+    }
+    else {
         Write-Host "Unable to convert to file type: $($OutputFile.Split(".")[$OutputFile.Split(".").Length-1])" -ForegroundColor Red
         return $null
     }
-
-    # $image = New-Object -ComObject Wia.ImageFile
-    # $image.LoadFile($ImagePath)
-
-    # $imageProcess = New-Object -ComObject Wia.ImageProcess
-    # $imageProcess.Filters.Add($imageProcess.FilterInfos("Convert").FilterId)
-
-    # #$imageProcess.Filters[1].Properties("FormatId").Value = # Set image type here
-
-    # $outImage = $imageProcess.Apply($image)
-    # $outImage.SaveFile($OutputFile)
-
 }
 
 Export-ModuleMember Convert-Image
