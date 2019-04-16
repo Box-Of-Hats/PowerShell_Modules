@@ -197,23 +197,82 @@ function Resize-Image {
 function Convert-Image {
     param(
         [Parameter(Mandatory = $true)] [string] $ImagePath,
-        [Parameter(Mandatory = $true)] [string] $OutputFile
+        [Parameter(Mandatory = $true)] [string] $OutputFile,
+        [Parameter(Mandatory = $false)] [int] $JpegQuality = 0
     )
 
-    if (@("jpeg", "jpg", "gif", "png", "tiff") -contains $OutputFile.Split(".")[$OutputFile.Split(".").Length - 1]) {
-        # $image = New-Object -ComObject Wia.ImageFile
-        # $image.LoadFile($ImagePath)
+    if (-not (Test-Path $ImagePath)){
+        Write-Host "Can't find path: $ImagePath" -ForegroundColor Red
+        return $null
+    }
 
-        # $imageProcess = New-Object -ComObject Wia.ImageProcess
-        # $imageProcess.Filters.Add($imageProcess.FilterInfos("Convert").FilterId)
+    if (-not $JpegQuality -or 0 -eq $JpegQuality){
+        $JpegQuality = 80
+    }
 
-        # #$imageProcess.Filters[1].Properties("FormatId").Value = # Set image type here
+    if ([string]::IsNullOrWhiteSpace($OutputFile)) {
+        $item = Get-ChildItem $ImagePath
+        Write-Host "item $item"
+        $currentTime = [datetime]::Now.Ticks
+        $OutputFile = $item.BaseName + "_scaled_$currentTime" + $item.Extension
+    }
+    $OutputFile = Join-Path (Get-Location) $OutputFile
 
-        # $outImage = $imageProcess.Apply($image)
-        # $outImage.SaveFile($OutputFile)
+    $ImagePath = Resolve-Path $ImagePath
+
+    $outputFileExtension = $OutputFile.Split(".")[$OutputFile.Split(".").Length - 1];
+    $inputFileExtension = $ImagePath.Split(".")[$ImagePath.Split(".").Length - 1]
+
+
+    if ((@("jpeg", "jpg", "gif", "png", "bmp", "tiff") -contains $outputFileExtension) -and (@("jpeg", "jpg", "gif", "png", "bmp", "tiff") -contains $inputFileExtension)) {
+        switch ($outputFileExtension) {
+            "jpeg" {
+                #Fallthrough
+            }
+            "jpg" {
+                $imageFormatId = "{B96B3CAE-0728-11D3-9D7B-0000F81EF32E}"
+                break
+            }
+            "gif" {
+                $imageFormatId = "{B96B3CB0-0728-11D3-9D7B-0000F81EF32E}"
+                break
+            }
+            "png" {
+                $imageFormatId = "{B96B3CAF-0728-11D3-9D7B-0000F81EF32E}"
+                break
+            }
+            "tiff" {
+                $imageFormatId = "{B96B3CB1-0728-11D3-9D7B-0000F81EF32E}"
+                break
+            }
+            "bmp" {
+                $imageFormatId = "{B96B3CAB-0728-11D3-9D7B-0000F81EF32E}"
+                break
+            }
+            Default {
+                Write-Host "Can't convert to filetype: $outputFileExtension" -ForegroundColor Red
+                return $null
+            }
+        }
+
+        $image = New-Object -ComObject Wia.ImageFile
+        $image.LoadFile($ImagePath)
+
+        $imageProcess = New-Object -ComObject Wia.ImageProcess
+        $imageProcess.Filters.Add($imageProcess.FilterInfos("Convert").FilterId)
+
+        $imageProcess.Filters[1].Properties("FormatID").Value = "$imageFormatId"
+        $imageProcess.Filters[1].Properties("Quality").Value = $JpegQuality
+        $outImage = $imageProcess.Apply($image)
+
+        if ($null -eq $outImage){
+            Write-Host "Could not convert image." -ForegroundColor Red
+            return $null
+        }
+        $outImage.SaveFile($OutputFile)
     }
     else {
-        Write-Host "Unable to convert to file type: $($OutputFile.Split(".")[$OutputFile.Split(".").Length-1])" -ForegroundColor Red
+        Write-Host "Unable to convert: $ImagePath => $OutputFile. Bad file type" -ForegroundColor Red
         return $null
     }
 }
