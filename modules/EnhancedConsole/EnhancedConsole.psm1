@@ -118,15 +118,15 @@ function Get-ChildItemGridView {
         
         #Truncate the filename if necessary
         if ($fileName.Length -ge $maxColumnWidth) {
-            $fileName = $fileName.SubString(0, $maxColumnWidth-1) + "…"
+            $truncator = "..."
+            $fileName = "$($fileName.SubString(0, $maxColumnWidth-$truncator.Length-$item.Extension.Length-1))$($truncator)$($item.Extension)"
         }
 
         #Output the name
-        $fileName = $fileName.PadRight(40, " ")
+        $fileName = $fileName.PadRight($maxColumnWidth, " ")
         Write-Host $fileName -NoNewline -ForegroundColor $color
         
         #Add whitespace or a newline char
-        $spacesRequired = $maxColumnWidth - $fileName.Length - 4
         if ($colCount -ge $MaxColumnCount) {
             Write-Host ""
             $colCount = 0
