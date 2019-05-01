@@ -19,5 +19,16 @@ function Clear-GitCache {
     git add .
 }
 
+
+<#
+.SYNOPSIS
+Undo your last git commit
+#>
+
+function Undo-GitCommit {
+    git reset --soft HEAD~1
+}
+
 Export-ModuleMember Show-GitBranches
 Export-ModuleMember Clear-GitCache
+Export-ModuleMember Undo-GitCommit
