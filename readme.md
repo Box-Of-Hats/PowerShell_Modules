@@ -18,15 +18,15 @@ You now have all of the modules installed and the commands will be available in 
 
 You can use the `Edit-Config` command to select any of the config files used by these modules and you can adjust the settings to suit your needs.
 
-Note: If you re-install any modules using ModuleInstaller.ps1, __you will lose any config.json files.__ You can instead create config.user.json files which will not be overwritten. All modules will prioritise config.user.json files when they are found. 
+Note: If you re-install any modules using ModuleInstaller.ps1, **you will lose any config.json files.** You can instead create config.user.json files which will not be overwritten. All modules will prioritise config.user.json files when they are found.
 
-___
+---
 
 ## Available modules
 
 ### Module installer
 
-To install any modules from this repo, you can dump the associated directory into your Powershell modules folder. 
+To install any modules from this repo, you can dump the associated directory into your Powershell modules folder.
 
 Otherwise, you can run ModuleInstaller.ps1 from this repo with the name of the module that you want to install.
 
@@ -34,8 +34,19 @@ Once installled, the module and its commands will be available in all of your po
 
 `E:\dev\code\PowerShell_Snippets\modules> .\ModuleInstaller.ps1 .\WorkspaceManager`
 
-
 ![Installation Example](images/ps_snips_install_example.gif)
+
+### ProjectWizard
+
+Create new projects quickly, with less boilerplate.
+
+#### New-ReactProject
+
+Create a basic react project with webpack and SCSS. More lightweight than **create-react-app** and allows you to get started immediately, without having to tear up the template project.
+
+```powershell
+>New-ReactProject my-new-projectname
+```
 
 ### WorkspaceManager
 
