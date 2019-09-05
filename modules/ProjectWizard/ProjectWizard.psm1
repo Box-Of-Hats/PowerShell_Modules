@@ -2,6 +2,8 @@
 #region files
 
 $GIT_IGNORE = '/node_modules/
+/dist/
+!/dist/index.html
 ';
 
 $TASKS_JSON = '{
