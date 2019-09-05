@@ -10,7 +10,7 @@ $TASKS_JSON = '{
         {
             "label": "webpack: watch",
             "type": "shell",
-            "command": "webpack"
+            "command": "webpack --watch"
         },
         {
             "label": "webpack: build",
@@ -29,6 +29,7 @@ ReactDOM.render(<App />, document.querySelector("#app"));
 ';
 
 $APP_JSX = 'import React from "react";
+import "./app.scss";
 
 export const App = props => {
     return <h1>Hello world</h1>;
@@ -52,6 +53,10 @@ $INDEX_HTML = '<!DOCTYPE html>
 </html>
 ';
 
+$APP_SCSS = 'h1 {
+    font-style: italic;
+}
+'
 $WEBPACK_CONFIG = '"use strict";
 
 const path = require("path");
@@ -72,6 +77,10 @@ module.exports = {
                 use: {
                     loader: "babel-loader"
                 }
+            },
+            {
+                test: /\.scss$/i,
+                use: ["style-loader", "css-loader", "sass-loader"]
             }
         ]
     },
@@ -105,7 +114,7 @@ function New-ReactProject {
     npm i react react-dom
 
     # dev dependencies
-    npm i @babel/core @babel/preset-env @babel/preset-react babel-loader webpack --save-dev
+    npm i @babel/core @babel/preset-env @babel/preset-react babel-loader webpack sass-loader node-sass css-loader style-loader --save-dev
 
     # config files
     New-Item -Path "./webpack.config.js" -ItemType File -Value $WEBPACK_CONFIG
@@ -121,6 +130,7 @@ function New-ReactProject {
     $srcDirectory = New-Item -Path "./src" -ItemType Directory
     Set-Location $srcDirectory
     New-Item -Path "./App.jsx" -ItemType File -Value $APP_JSX
+    New-Item -Path "./app.scss" -ItemType File -Value $APP_SCSS
     New-Item -Path "./index.js" -ItemType File -Value $INDEX_JS
     Set-Location ..
 
