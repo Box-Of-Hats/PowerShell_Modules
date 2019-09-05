@@ -2,7 +2,7 @@
 #region files
 
 $GIT_IGNORE = '/node_modules/
-/dist/
+/dist/*
 !/dist/index.html
 ';
 
