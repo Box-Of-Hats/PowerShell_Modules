@@ -7,10 +7,10 @@ function Get-ConfigFile {
         foreach ($path in $configPaths) {
             if (Test-Path -Path $path -PathType Leaf) {
                 return $path
-            }   
+            }
         }
     }
-    
+
     Write-Host "Could not find a config file. Checked locations: "
     foreach ($path in $configPaths) {
         Write-Host $path
@@ -32,8 +32,6 @@ function Copy-Location {
     $currentLocation | clip.exe
     return $currentLocation
 }
-
-
 <#
 .DESCRIPTION
 Change directory and list the contents similtaniously
@@ -56,17 +54,17 @@ Output files in the current directory, similar to "ls" command on linux.
 function Get-ChildItemGridView {
     Param(
         [Parameter(Mandatory = $false)]$Directory = $false,
-        [Parameter(Mandatory=$false)]$MaxColumnCount = $null,
-        [Parameter(Mandatory=$false)]$ConfigFile = $null
+        [Parameter(Mandatory = $false)]$MaxColumnCount = $null,
+        [Parameter(Mandatory = $false)]$ConfigFile = $null
     )
     if (-not $Directory) {
         $Directory = "."
     }
-    
+
     if ([string]::IsNullOrEmpty($ConfigFile)) {
         $configFile = Get-ConfigFile
     }
-    
+
     if (-not $configFile) {
         Write-Host "Could not find config." -ForegroundColor Red
         return
@@ -77,11 +75,11 @@ function Get-ChildItemGridView {
     $extensionColors = $config.extension_colors
     $configMaxColumnCount = $config.column_count;
 
-    if ($null -ne $configMaxColumnCount){
+    if ($null -ne $configMaxColumnCount) {
         $MaxColumnCount = $configMaxColumnCount
     }
 
-    if ($null -eq $MaxColumnCount){
+    if ($null -eq $MaxColumnCount) {
         $MaxColumnCount = 4
     }
 
@@ -98,24 +96,25 @@ function Get-ChildItemGridView {
 
         #Determine what colour to display the name in
         $color = $propColors.default
-        
+
         $extension = $item.Extension
-        if ($null -ne $extensionColors.$extension){
+        if ($null -ne $extensionColors.$extension) {
             $color = $extensionColors.$extension
         }
-        
-        if (Test-Path $item -PathType Container){
+
+        if (Test-Path $item -PathType Container) {
             $color = $propColors.is_container
-        } elseif ($item.IsReadOnly){
+        }
+        elseif ($item.IsReadOnly) {
             $color = $propColors.is_read_only
         }
         if ($color -notin @("Black", "DarkBlue", "DarkGreen", "DarkCyan", "DarkRed",
-                                "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue",
-                                "Green", "Cyan", "Red", "Magenta", "Yellow", "White")){
+                "DarkMagenta", "DarkYellow", "Gray", "DarkGray", "Blue",
+                "Green", "Cyan", "Red", "Magenta", "Yellow", "White")) {
             $color = "White"
         }
-        
-        
+
+
         #Truncate the filename if necessary
         if ($fileName.Length -ge $maxColumnWidth) {
             $truncator = "..."
@@ -125,7 +124,7 @@ function Get-ChildItemGridView {
         #Output the name
         $fileName = $fileName.PadRight($maxColumnWidth, " ")
         Write-Host $fileName -NoNewline -ForegroundColor $color
-        
+
         #Add whitespace or a newline char
         if ($colCount -ge $MaxColumnCount) {
             Write-Host ""
