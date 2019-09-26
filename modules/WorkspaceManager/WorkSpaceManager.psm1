@@ -94,7 +94,11 @@ function OpenWorkspace {
 
     # Programs
     foreach ($programs in $WorkSpace.programs) {
-        Start-Process $programs -WindowStyle Maximized -UseNewEnvironment
+        try {
+            Start-Process $programs -WindowStyle Maximized -UseNewEnvironment
+        } catch {
+            Start-Process $programs
+        }
     }
 
     # Launch
