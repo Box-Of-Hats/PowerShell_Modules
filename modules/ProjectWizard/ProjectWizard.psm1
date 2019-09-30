@@ -81,6 +81,24 @@ module.exports = {
                 }
             },
             {
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: ["file-loader"]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                loader: "image-webpack-loader",
+                enforce: "pre"
+            },
+            {
                 test: /\.scss$/i,
                 use: ["style-loader", "css-loader", "sass-loader"]
             }
@@ -116,7 +134,7 @@ function New-ReactProject {
     npm i react react-dom
 
     # dev dependencies
-    npm i @babel/core @babel/preset-env @babel/preset-react babel-loader webpack sass-loader node-sass css-loader style-loader --save-dev
+    npm i @babel/core @babel/preset-env @babel/preset-react babel-loader webpack sass-loader node-sass css-loader style-loader typescript ts-loader source-map-loader image-webpack-loader css-loader @types/react-dom @types/react @types/react-router-dom --save-dev
 
     # config files
     New-Item -Path "./webpack.config.js" -ItemType File -Value $WEBPACK_CONFIG
