@@ -97,30 +97,3 @@ To open a workspace, you can either type the quick-code letter to the left of an
      X -- Uni Work
     > Relaxa|
 ```
-
-## Scripts
-
-### Process clipboard selection
-
-Need to copy lots of items from one place to another but the format isn't quite right? You can modify the clipboard selection on-the-fly!
-
-```Powershell
-function Process-Clipboard {
-    $prev = $null;
-    while ($true) {
-        $clipBoard = Get-Clipboard
-        if ($prev -ne $clipBoard) {
-            ### Do processing here ##
-
-            # e.g
-            # $clipBoard = $clipBoard.Replace(" , ", " ; ")
-
-            ########################
-            Set-Clipboard $clipBoard
-            $prev = $clipBoard
-        }
-        Start-Sleep 1
-        Write-Host "$clipBoard"
-    }
-}
-```
