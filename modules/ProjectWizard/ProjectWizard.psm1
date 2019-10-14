@@ -6,6 +6,27 @@ $GIT_IGNORE = '/node_modules/
 !/dist/index.html
 ';
 
+$DEV_SERVER_JS = '
+var express = require("express");
+var app = express();
+var path = require("path");
+
+app.get("/*.*", function(req, res) {
+    const requestedFile = `./dist/${
+        req.path.split("/")[req.path.split("/").length - 1]
+    }`;
+    console.log(`serving file: "${requestedFile}"`);
+    res.sendFile(path.resolve(__dirname, requestedFile));
+});
+
+// viewed at http://localhost:8080
+app.get("/*", function(req, res) {
+    res.sendFile(path.resolve(__dirname, "dist/index.html"));
+});
+
+app.listen(8080);
+';
+
 $TASKS_JSON = '{
     "version": "2.0.0",
     "tasks": [
@@ -18,6 +39,28 @@ $TASKS_JSON = '{
             "label": "webpack: build",
             "type": "shell",
             "command": "webpack"
+        },
+        {
+            "label": "browser-sync: watch",
+            "type": "shell",
+            "command": "browser-sync start --proxy http://localhost:8080 --ignore ./node_modules/ --files ./dist/",
+            "options": {
+                "cwd": "./"
+            }
+        },
+        {
+            "label": "express: start node server",
+            "type": "shell",
+            "command": "node ./devServer.js",
+            "problemMatcher": []
+        },
+        {
+            "label": "start dev server",
+            "dependsOn": [
+                "webpack: watch",
+                "express: start node server",
+                "browser-sync: watch"
+            ]
         }
     ]
 }
@@ -81,6 +124,24 @@ module.exports = {
                 }
             },
             {
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: ["file-loader"]
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                loader: "image-webpack-loader",
+                enforce: "pre"
+            },
+            {
                 test: /\.scss$/i,
                 use: ["style-loader", "css-loader", "sass-loader"]
             }
@@ -102,7 +163,8 @@ $BABEL_RC = '{
 
 function New-ReactProject {
     Param(
-        [Parameter(Mandatory = $true)][string]$ProjectName
+        [Parameter(Mandatory = $true)][string]$ProjectName,
+        [Parameter(Mandatory = $false)][switch]$SkipNpmInstall
     )
 
     # project directory
@@ -112,11 +174,13 @@ function New-ReactProject {
     # npm packages
     npm init -y
 
-    # dependencies
-    npm i react react-dom
+    if (-not $SkipNpmInstall) {
+        # dependencies
+        npm i react react-dom
 
-    # dev dependencies
-    npm i @babel/core @babel/preset-env @babel/preset-react babel-loader webpack sass-loader node-sass css-loader style-loader --save-dev
+        # dev dependencies
+        npm i @babel/core @babel/preset-env @babel/preset-react babel-loader webpack sass-loader node-sass css-loader style-loader typescript ts-loader source-map-loader image-webpack-loader css-loader @types/react-dom @types/react @types/react-router-dom express --save-dev
+    }
 
     # config files
     New-Item -Path "./webpack.config.js" -ItemType File -Value $WEBPACK_CONFIG
@@ -127,6 +191,10 @@ function New-ReactProject {
     Set-Location $vsCodeDirectory
     New-Item -Path "./tasks.json" -ItemType File -Value $TASKS_JSON
     Set-Location ..
+
+
+    # root directory
+    New-Item -Path "./devServer.js" -ItemType File -Value $DEV_SERVER_JS
 
     # src directory
     $srcDirectory = New-Item -Path "./src" -ItemType Directory
@@ -153,8 +221,8 @@ function New-ReactProject {
     Write-Host ""
     Write-Host "All done!" -ForegroundColor Green
     Write-Host "1. open vscode here" -ForegroundColor Green
-    Write-Host "2. webpack: build (optionally webpack: watch)" -ForegroundColor Green
-    Write-Host "3. open index.html with live server" -ForegroundColor Green
+    Write-Host "2. run task 'start dev server'" -ForegroundColor Green
+    Write-Host "3. go to http://localhost:8080" -ForegroundColor Green
     Write-Host "`n" -BackgroundColor Green
     Write-Host ""
 
