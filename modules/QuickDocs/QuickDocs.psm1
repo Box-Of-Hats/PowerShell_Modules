@@ -21,12 +21,12 @@ $standupTemplate = '# {0} - {1}
 -   
 ';
 
-function New-Standup(){
+function New-Standup() {
     param(
-        [Parameter(Mandatory=$true)][string]$ProjectName
+        [Parameter(Mandatory = $true)][string]$ProjectName
     )
     $today = ([datetime]::Now).ToString("yyyy-MM-dd")
-    $path = New-Item -Type File -Path ("{0}-{1}.md" -F ($ProjectName, $today)) -Value ($standupTemplate -F ($ProjectName, $today))
+    $path = New-Item -Type File -Path ("{0}-{1}.md" -F ($today, $ProjectName)) -Value ($standupTemplate -F ($ProjectName, $today))
     return $path.FullName
 }
 
