@@ -229,4 +229,64 @@ function New-ReactProject {
 }
 
 
+<#
+.SYNOPSIS
+Create a new typescript react component folder.
+
+.PARAMETER ComponentName
+The name of the component you wish to create.
+
+.EXAMPLE
+New-ReactComponent menu
+
+.NOTES
+Component folders will always be created under `./src/components/` directory
+#>
+
+function New-ReactComponent {
+    param (
+        [string] $ComponentName
+    )
+
+    $sanitisedComponentName = $ComponentName.Replace("/", "").Replace(" ", "-")
+
+    $reactFilename = "$sanitisedComponentName.tsx"
+    $scssFilename = "$sanitisedComponentName.scss"
+
+    $componentFilepath = "./src/components/$sanitisedComponentName";
+
+    $reactContents = @"
+import React from "react";
+import "./$scssFilename";
+
+interface ${ComponentName}Props {
+
+}
+
+export const ${ComponentName} = (props : ${ComponentName}Props) => {
+    return <>
+
+    </>
+}
+
+"@;
+
+    New-Item $componentFilepath -Type Directory -ErrorAction Ignore | Out-Null
+
+    New-Item (Join-Path $componentFilepath $reactFilename) -Type File -Value $reactContents | Out-Null
+    New-Item (Join-Path $componentFilepath $scssFilename) -Type File | Out-Null
+
+    Write-Host "Created component: $sanitisedComponentName" -ForegroundColor Green
+    Write-Host "  $componentFilepath" -ForegroundColor Green
+    Write-Host "    |- $reactFilename" -ForegroundColor Cyan
+    Write-Host "    |- $scssFilename" -ForegroundColor DarkYellow
+}
+
+
+#Alias
+New-Alias -Name nrc -Value New-ReactComponent
+
+#Exports
 Export-ModuleMember New-ReactProject
+Export-ModuleMember New-ReactComponent
+Export-ModuleMember -Alias *
