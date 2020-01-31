@@ -49,8 +49,17 @@ function ShowMenu {
         Write-Host $key "--" $val
     }
 
-    $userIn = Read-Host ">"
-    $userIn = $userIn.ToUpper().Trim()
+    Write-Host ">" -NoNewline;
+    $pressedKey = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown");
+
+    if ($pressedKey.VirtualKeyCode -eq 27){
+        # Escape key 
+        Write-Host "Exiting..." -ForegroundColor Yellow
+        return -1
+    }
+
+    $userIn = ([string]::new($pressedKey.Character)).ToUpper();
+    Write-Host $userIn
 
     if ($userIn.Length -gt 1) {
         for ($i = 0; $i -lt $OptionsList.Length; $i++) {
