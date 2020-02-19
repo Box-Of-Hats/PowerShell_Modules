@@ -44,7 +44,7 @@ function Set-LocationAndGetChildItem {
         [Parameter(Mandatory = $true)][string]$Location
     )
     Set-Location $Location
-    Get-ChildItem
+    Get-ChildItemGridView
 }
 
 <#
