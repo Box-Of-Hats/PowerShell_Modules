@@ -95,9 +95,9 @@ function OpenWorkspace {
     # Programs
     foreach ($programs in $WorkSpace.programs) {
         try {
-            Start-Process $programs -WindowStyle Maximized -UseNewEnvironment
+            Start-Process $programs -WindowStyle Maximized -UseNewEnvironment | Out-Null
         } catch {
-            Start-Process $programs
+            Start-Process $programs | Out-Null
         }
     }
 
@@ -113,7 +113,7 @@ function OpenWorkspace {
             $exe = $launchablePrograms.($item.Name)
             $arg = $item.Value
             Write-Host  "Start-Process '$exe' $arg"
-            Start-Process $exe $arg
+            Start-Process $exe $arg  | Out-Null
         }
     }
 
