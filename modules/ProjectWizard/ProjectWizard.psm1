@@ -252,8 +252,11 @@ function New-ReactComponent {
 
     $reactFilename = "$sanitisedComponentName.tsx"
     $scssFilename = "$sanitisedComponentName.scss"
+    $lowerCaseComponentName = $sanitisedComponentName.ToLower()
 
     $componentFilepath = "./src/components/$sanitisedComponentName";
+
+    $scssContents = ".$lowerCaseComponentName { }"
 
     $reactContents = @"
 import React from "react";
@@ -264,9 +267,9 @@ interface ${ComponentName}Props {
 }
 
 export const ${ComponentName} = (props : ${ComponentName}Props) => {
-    return <>
+    return <div className="$lowerCaseComponentName">
 
-    </>
+    </div>
 }
 
 "@;
@@ -274,7 +277,7 @@ export const ${ComponentName} = (props : ${ComponentName}Props) => {
     New-Item $componentFilepath -Type Directory -ErrorAction Ignore | Out-Null
 
     New-Item (Join-Path $componentFilepath $reactFilename) -Type File -Value $reactContents | Out-Null
-    New-Item (Join-Path $componentFilepath $scssFilename) -Type File | Out-Null
+    New-Item (Join-Path $componentFilepath $scssFilename) -Type File -Value $scssContents| Out-Null
 
     Write-Host "Created component: $sanitisedComponentName" -ForegroundColor Green
     Write-Host "  $componentFilepath" -ForegroundColor Green
