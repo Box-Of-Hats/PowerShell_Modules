@@ -239,10 +239,16 @@ function Update-CreateReactAppTemplate {
 
     Write-Host "Modifying tsconfig..." -ForegroundColor Cyan
     $tsConfigPath = "./tsconfig.json"
-    Write-Host " Setting baseUrl..."
+    Write-Host " Setting baseUrl"
     $tsConfig = Get-Content -Raw -Path $tsConfigPath | ConvertFrom-Json
     $tsConfig.compilerOptions | Add-Member -Name "baseUrl" -Value "src/" -MemberType NoteProperty
     ConvertTo-Json $tsConfig -Depth 4  | Out-File $tsConfigPath
+
+    Write-Host "Adding node_modules..." -ForegroundColor Cyan
+    Write-Host " node-sass"
+    npm install node-sass
+
+    Write-Host "Finished" -ForegroundColor Green
 }
 
 <#
