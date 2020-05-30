@@ -228,6 +228,22 @@ function New-ReactProject {
 
 }
 
+<#
+.SYNOPSIS
+Modify a base create react app template with the some basic customisations. This only works for projects using the typescript template
+
+The idea behind this one is that it's much easier to modify a generated create-react-app instead of writing my own generator
+
+#>
+function Update-CreateReactAppTemplate {
+
+    Write-Host "Modifying tsconfig..." -ForegroundColor Cyan
+    $tsConfigPath = "./tsconfig.json"
+    Write-Host " Setting baseUrl..."
+    $tsConfig = Get-Content -Raw -Path $tsConfigPath | ConvertFrom-Json
+    $tsConfig.compilerOptions | Add-Member -Name "baseUrl" -Value "src/" -MemberType NoteProperty
+    ConvertTo-Json $tsConfig -Depth 4  | Out-File $tsConfigPath
+}
 
 <#
 .SYNOPSIS
@@ -292,4 +308,5 @@ New-Alias -Name nrc -Value New-ReactComponent
 #Exports
 Export-ModuleMember New-ReactProject
 Export-ModuleMember New-ReactComponent
+Export-ModuleMember Update-CreateReactAppTemplate
 Export-ModuleMember -Alias *
