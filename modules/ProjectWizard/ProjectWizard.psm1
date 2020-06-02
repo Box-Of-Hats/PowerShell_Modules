@@ -244,6 +244,28 @@ function Update-CreateReactAppTemplate {
     $tsConfig.compilerOptions | Add-Member -Name "baseUrl" -Value "src/" -MemberType NoteProperty
     ConvertTo-Json $tsConfig -Depth 4  | Out-File $tsConfigPath
 
+    Write-Host "Removing base CSS..." -ForegroundColor Cyan
+    $cssFiles = @(
+        @{
+            css = "./src/App.css";
+            importedBy = ".\src\App.tsx";
+            importPath = "./App.css"
+        },
+        @{
+            css = "./src/index.css";
+            importedBy = ".\src\Index.tsx";
+            importPath = "./index.css"
+        }
+    )
+    foreach ($cssFile in $cssFiles){
+        Write-Host " Removing $($cssFile.css)"
+        if (Test-Path $cssFile.css){
+            Remove-Item $cssFile.css
+        }
+        $newContent = Get-Content $cssFile.importedBy | % { if ($_ -eq "import '$($cssFile.importPath)';") { return } else { return $_ } };
+        Set-Content -Path $cssFile.importedBy -Value $newContent
+    }
+
     Write-Host "Adding node_modules..." -ForegroundColor Cyan
     Write-Host " node-sass"
     npm install node-sass
