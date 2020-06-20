@@ -300,6 +300,8 @@ function New-ReactComponent {
 
     $componentFilepath = "./src/components/$sanitisedComponentName";
 
+    $indexContents = "export * from './$ComponentName'"
+
     $scssContents = ".$lowerCaseComponentName { }"
 
     $reactContents = @"
@@ -321,12 +323,14 @@ export const ${ComponentName} = (props : ${ComponentName}Props) => {
     New-Item $componentFilepath -Type Directory -ErrorAction Ignore | Out-Null
 
     New-Item (Join-Path $componentFilepath $reactFilename) -Type File -Value $reactContents | Out-Null
-    New-Item (Join-Path $componentFilepath $scssFilename) -Type File -Value $scssContents| Out-Null
+    New-Item (Join-Path $componentFilepath $scssFilename) -Type File -Value $scssContents | Out-Null
+    New-Item (Join-Path $componentFilepath "index.ts") -Type File -Value $indexContents | Out-Null
 
     Write-Host "Created component: $sanitisedComponentName" -ForegroundColor Green
     Write-Host "  $componentFilepath" -ForegroundColor Green
     Write-Host "    |- $reactFilename" -ForegroundColor Cyan
     Write-Host "    |- $scssFilename" -ForegroundColor DarkYellow
+    Write-Host "    |- index.ts" -ForegroundColor Cyan
 }
 
 
