@@ -10,7 +10,8 @@
             "name": "Template Workspace",
             "websites": ["http://www.google.com"],
             "launch": {},
-            "open_files": []
+            "open_files": [],
+            "commands": ["Write-Host 100"]
         },
         {
             "name": "Template Workspace 2",

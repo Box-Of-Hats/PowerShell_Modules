@@ -1,40 +1,40 @@
 ﻿function CreateNewVirtualDeskTop {
-    $KeyShortcut = Add-Type -MemberDefinition @" 
-    [DllImport("user32.dll")] 
-    static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo); 
-    //WIN + CTRL + D: Create a new desktop 
-    public static void CreateVirtualDesktopInWin10() 
-    { 
-        //Key down 
-        keybd_event((byte)0x5B, 0, 0, UIntPtr.Zero); //Left Windows key  
-        keybd_event((byte)0x11, 0, 0, UIntPtr.Zero); //CTRL 
-        keybd_event((byte)0x44, 0, 0, UIntPtr.Zero); //D 
-        //Key up 
-        keybd_event((byte)0x5B, 0, (uint)0x2, UIntPtr.Zero); 
-        keybd_event((byte)0x11, 0, (uint)0x2, UIntPtr.Zero); 
-        keybd_event((byte)0x44, 0, (uint)0x2, UIntPtr.Zero); 
-    } 
-"@ -Name CreateVirtualDesktop -UsingNamespace System.Threading -PassThru 
+    $KeyShortcut = Add-Type -MemberDefinition @"
+    [DllImport("user32.dll")]
+    static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+    //WIN + CTRL + D: Create a new desktop
+    public static void CreateVirtualDesktopInWin10()
+    {
+        //Key down
+        keybd_event((byte)0x5B, 0, 0, UIntPtr.Zero); //Left Windows key
+        keybd_event((byte)0x11, 0, 0, UIntPtr.Zero); //CTRL
+        keybd_event((byte)0x44, 0, 0, UIntPtr.Zero); //D
+        //Key up
+        keybd_event((byte)0x5B, 0, (uint)0x2, UIntPtr.Zero);
+        keybd_event((byte)0x11, 0, (uint)0x2, UIntPtr.Zero);
+        keybd_event((byte)0x44, 0, (uint)0x2, UIntPtr.Zero);
+    }
+"@ -Name CreateVirtualDesktop -UsingNamespace System.Threading -PassThru
     $KeyShortcut::CreateVirtualDesktopInWin10()
 }
 
 function CloseVirtualDeskTop {
-    $KeyShortcut = Add-Type -MemberDefinition @" 
-    [DllImport("user32.dll")] 
-    static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo); 
-    //WIN + CTRL + W: Close a desktop 
-    public static void CloseVirtualDesktopInWin10() 
-    { 
-        //Key down 
-        keybd_event((byte)0x5B, 0, 0, UIntPtr.Zero); //Left Windows key  
-        keybd_event((byte)0x11, 0, 0, UIntPtr.Zero); //CTRL 
+    $KeyShortcut = Add-Type -MemberDefinition @"
+    [DllImport("user32.dll")]
+    static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+    //WIN + CTRL + W: Close a desktop
+    public static void CloseVirtualDesktopInWin10()
+    {
+        //Key down
+        keybd_event((byte)0x5B, 0, 0, UIntPtr.Zero); //Left Windows key
+        keybd_event((byte)0x11, 0, 0, UIntPtr.Zero); //CTRL
         keybd_event((byte)0x73, 0, 0, UIntPtr.Zero); //W
-        //Key up 
-        keybd_event((byte)0x5B, 0, (uint)0x2, UIntPtr.Zero); 
-        keybd_event((byte)0x11, 0, (uint)0x2, UIntPtr.Zero); 
-        keybd_event((byte)0x44, 0, (uint)0x2, UIntPtr.Zero); 
-    } 
-"@ -Name CloseVirtualDesktop -UsingNamespace System.Threading -PassThru 
+        //Key up
+        keybd_event((byte)0x5B, 0, (uint)0x2, UIntPtr.Zero);
+        keybd_event((byte)0x11, 0, (uint)0x2, UIntPtr.Zero);
+        keybd_event((byte)0x44, 0, (uint)0x2, UIntPtr.Zero);
+    }
+"@ -Name CloseVirtualDesktop -UsingNamespace System.Threading -PassThru
     $KeyShortcut::CloseVirtualDesktopInWin10()
 }
 
@@ -86,7 +86,7 @@ function OpenWorkspace {
             Start-Process chrome $url
         }
     }
-    
+
     # Misc Files
     foreach ($file in $WorkSpace.open_files) {
         Start-Process $file -WindowStyle Maximized
@@ -117,6 +117,13 @@ function OpenWorkspace {
         }
     }
 
+    # Commands
+    foreach ($command in $WorkSpace.commands) {
+        Write-Host "Execute: $command"
+        Invoke-Expression $command
+        Start-Sleep 500
+    }
+
 }
 
 <#
@@ -134,10 +141,10 @@ function Get-ConfigFile {
         foreach ($path in $configPaths) {
             if (Test-Path -Path $path -PathType Leaf) {
                 return $path
-            }   
+            }
         }
     }
-    
+
     Write-Host "Could not find a config file. Checked locations: "
     foreach ($path in $configPaths) {
         Write-Host $path
@@ -183,7 +190,7 @@ function Open-WorkSpace {
 
     Write-Host "Select a workspace:"
     $chosenWorkspaceIndex = ShowMenu $config.workspaces.name -KeyList $config.keylist
-    
+
     if (-1 -eq $chosenWorkspaceIndex) {
         Write-Host "Could not find workspace."
         return
