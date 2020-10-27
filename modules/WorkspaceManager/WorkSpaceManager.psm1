@@ -41,7 +41,8 @@ function CloseVirtualDeskTop {
 function ShowMenu {
     Param(
         [Parameter(Mandatory = $true)] $OptionsList,
-        [Parameter(Mandatory = $false)] $KeyList = "ZXCVBNMASDFGHJKLQWERTYUIOP1234567890"
+        [Parameter(Mandatory = $false)] $KeyList = "ZXCVBNMASDFGHJKLQWERTYUIOP1234567890",
+        [Parameter(Mandatory = $false)] $UserInput
     )
     for ($i = 0; $i -lt $OptionsList.Length; $i++) {
         $key = $KeyList[$i]
@@ -49,20 +50,22 @@ function ShowMenu {
         Write-Host $key "--" $val
     }
 
-    $userIn = Read-Host ">"
-    $userIn = $userIn.ToUpper().Trim()
+    if ([string]::IsNullOrEmpty($UserInput)){
+        $UserInput = Read-Host ">"
+    }
+    $UserInput = $UserInput.ToUpper().Trim()
 
-    if ($userIn.Length -gt 1) {
+    if ($UserInput.Length -gt 1) {
         for ($i = 0; $i -lt $OptionsList.Length; $i++) {
-            Write-Host "[$i] Comparing $userIn to" $OptionsList[$i]
-            if ($OptionsList[$i].StartsWith($userIn, 'CurrentCultureIgnoreCase')) {
+            Write-Host "[$i] Comparing $UserInput to" $OptionsList[$i]
+            if ($OptionsList[$i].StartsWith($UserInput, 'CurrentCultureIgnoreCase')) {
                 return $i
             }
         }
         return -1
     }
 
-    return $KeyList.IndexOf($userIn);
+    return $KeyList.IndexOf($UserInput);
 }
 
 function OpenWorkspace {
@@ -173,12 +176,14 @@ function Edit-WorkSpaces {
 #>
 function Open-WorkSpace {
     Param(
-        [string]$ConfigFile,
-        [switch]$SameDesktop
+        [string]$WorkSpaceName,
+        [switch]$SameDesktop,
+        [string]$ConfigFile
     )
     if ([string]::IsNullOrEmpty($ConfigFile)) {
         $ConfigFile = Get-ConfigFile
     }
+
     if (Test-Path -Path $ConfigFile -PathType Leaf) {
         Write-Host "Loaded config from $ConfigFile" -ForegroundColor Green
         $config = Get-Content $ConfigFile | ConvertFrom-Json
@@ -189,7 +194,7 @@ function Open-WorkSpace {
     }
 
     Write-Host "Select a workspace:"
-    $chosenWorkspaceIndex = ShowMenu $config.workspaces.name -KeyList $config.keylist
+    $chosenWorkspaceIndex = ShowMenu $config.workspaces.name -KeyList $config.keylist -UserInput $WorkSpaceName
 
     if (-1 -eq $chosenWorkspaceIndex) {
         Write-Host "Could not find workspace."
